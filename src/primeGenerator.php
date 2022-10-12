@@ -3,8 +3,10 @@
 require_once __DIR__ . '/../vendor/autoload.php';
 use parallel\Runtime;
 
+$start_time = microtime(true);
+
 $a = 1;
-$b = 10;
+$b = 10000;
 $total = $b - $a;
 $totalNotDivisible = $b;
 
@@ -13,12 +15,11 @@ $runTimes = [];
 $futures = [];
 
 for($cont = 0; $cont < 4; $cont++) {
-    ${"contadora" . $cont} = $cont;
-    $runTimes[${"contadora" . $cont}] = new Runtime();
-    $futures[] = $runTimes[${"contadora" . $cont}]->run(function ($cont2, $total2, $totalNotDivisible2, $b2) {
+    $runTimes[$cont] = new Runtime();
+    $futures[] = $runTimes[$cont]->run(function ($cont, $total, $totalNotDivisible, $b) {
 
         $primes = [];
-        for($i = (($cont2*(floor($total2/4)))+1); $i <= (($cont2 != 3) ? (($cont2+1)*(floor($total2/4))) : $b2); $i++) {
+        for($i = (($cont*(floor($total/4)))+1); $i <= (($cont != 3) ? (($cont+1)*(floor($total/4))) : $b); $i++) {
             if (($i == 1) || ($i == 0)) {
                 continue;
             }
@@ -38,23 +39,20 @@ for($cont = 0; $cont < 4; $cont++) {
 
         }
         return $primes;
-    }, [${"contadora" . $cont}, $total, $totalNotDivisible, $b]);
+    }, [$cont, $total, $totalNotDivisible, $b]);
 }
 
 foreach($futures as $key => $thread) {
     $futures[$key]->done();
 }
 
+$file = fopen('src/resultadoAssincrono.txt', 'a');
 foreach($futures as $key => $primesArray) {
     foreach($primesArray->value() as $prime) {
-        echo $prime . PHP_EOL;
+        fwrite($file, $prime . PHP_EOL);
     }
 }
 
-/*foreach($futures as $primesArray) {
-    foreach($primesArray as $prime) {
-        echo $prime . PHP_EOL;
-    }
-}*/
+$end_time = microtime(true);
 
-//var_dump($futures);
+echo 'Tempo de execução: ' . $execution_time = ($end_time - $start_time);
