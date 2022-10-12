@@ -1,0 +1,20 @@
+{
+    "name": "jo1opedro/dcc062",
+    "description": "Paralelismo com php na disciplina DCC062 da UFJF",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Jo1opedro\\Dcc062\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "João Pedro",
+            "email": "joao.pedreira@estudante.ufjf.br"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "ext-parallel": "*"
+    }
+}
